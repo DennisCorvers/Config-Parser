@@ -24,6 +24,8 @@ void Configuration::save()
 			m_file << it.second->getName() << delimiter << it.second->valueToString() << std::endl;
 			if (IncludeWhiteLine)
 				m_file << std::endl;
+
+			it.second->IsChanged = false;
 		}
 	}
 	catch (const std::fstream::failure& e) {
@@ -120,6 +122,14 @@ bool Configuration::remove(const std::string & key)
 void Configuration::clearProperties() {
 	lock_guard lock(m_fileLock);
 	m_properties.clear();
+}
+
+bool Configuration::propertiesChanged() const
+{
+	for (auto it : m_properties) {
+		if (it.second->IsChanged)
+			return true;
+	}
 }
 
 

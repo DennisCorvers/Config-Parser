@@ -50,6 +50,7 @@ public:
 
 	void readProperty(string value) {
 		m_isRead = true;
+		IsChanged = false;
 		fromString(value);
 	}
 	virtual std::string valueToString() const = 0;

@@ -37,6 +37,8 @@ public:
 
 	void clearProperties();
 
+	bool propertiesChanged() const;
+
 	template<typename T>
 	std::shared_ptr<T> getType(const std::string& key)
 	{
