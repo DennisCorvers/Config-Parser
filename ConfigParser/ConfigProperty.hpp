@@ -30,7 +30,7 @@ protected:
 
 	using string = const std::string&;
 	virtual void fromString(string value) = 0;
-	virtual std::string getVerboseComment() = 0;
+	virtual std::string getVerboseComment() const = 0;
 
 public:
 	using Ptr = std::shared_ptr<ConfigProperty>;
@@ -52,19 +52,19 @@ public:
 		m_isRead = true;
 		fromString(value);
 	}
-	virtual std::string valueToString() = 0;
+	virtual std::string valueToString() const = 0;
 
 	ConfigProperty& setComment(string comment) {
 		m_comment = comment;
 		return *this;
 	}
-	std::string getComment(bool isVerbose = true) {
+	std::string getComment(bool isVerbose = true) const {
 		if (isVerbose)
 			return m_comment + ' ' + getVerboseComment();
 		return m_comment;
 	}
 
-	string getName() {
+	string getName() const {
 		return m_name;
 	}
 };
@@ -73,7 +73,7 @@ class StringProperty : public ConfigProperty {
 	std::string m_defaultValue;
 	std::string m_value;
 
-	std::string getVerboseComment() override {
+	std::string getVerboseComment() const override {
 		return "[default: " + m_defaultValue + ']';
 	}
 
@@ -81,7 +81,7 @@ class StringProperty : public ConfigProperty {
 		m_value = value;
 	}
 
-	std::string valueToString() override {
+	std::string valueToString() const override {
 		return m_value;
 	}
 
@@ -97,7 +97,7 @@ public:
 		m_value(defaultValue),
 		ConfigProperty(name, comment) {	}
 
-	string getValue() {
+	string getValue() const {
 		return m_value;
 	}
 
@@ -111,7 +111,7 @@ class BoolProperty : public ConfigProperty {
 	bool m_defaultValue;
 	bool m_value;
 
-	std::string getVerboseComment() override {
+	std::string getVerboseComment() const override {
 		std::string defVal = m_value ? "true" : "false";
 		return "[default: " + defVal + ']';
 	}
@@ -125,7 +125,7 @@ class BoolProperty : public ConfigProperty {
 		}
 	}
 
-	std::string valueToString() override {
+	std::string valueToString() const override {
 		return m_value ? "true" : "false";
 	}
 
@@ -141,7 +141,7 @@ public:
 		m_value(defaultValue),
 		ConfigProperty(name, comment) { }
 
-	bool getValue() {
+	bool getValue() const {
 		return m_value;
 	}
 
@@ -153,7 +153,7 @@ public:
 
 template<typename T, typename PropType>
 class NumericProperty : public ConfigProperty {
-	std::string getVerboseComment() override {
+	std::string getVerboseComment() const override {
 		T defaultMinValue = std::numeric_limits<T>::min();
 		T defaultMaxValue = std::numeric_limits<T>::max();
 		std::stringstream ss;
@@ -230,6 +230,7 @@ public:
 	}
 
 	PropType& setValue(T value) {
+		IsChanged = true;
 		m_value = value < m_minValue ? m_minValue : value > m_maxValue ? m_maxValue : value;
 		return static_cast<PropType&>(*this);
 	}
@@ -249,7 +250,7 @@ class IntProperty : public NumericProperty<int, IntProperty> {
 		}
 	}
 
-	std::string valueToString() override {
+	std::string valueToString() const override {
 		return std::to_string(m_value);
 	}
 
@@ -270,7 +271,7 @@ class LongProperty : public NumericProperty<long long, LongProperty> {
 		}
 	}
 
-	std::string valueToString() override {
+	std::string valueToString() const override {
 		return std::to_string(m_value);
 	}
 
@@ -289,7 +290,7 @@ class FloatProperty : public NumericProperty<float, FloatProperty> {
 		}
 	}
 
-	std::string valueToString() override {
+	std::string valueToString() const override {
 		return std::to_string(m_value);
 	}
 
@@ -308,7 +309,7 @@ class DoubleProperty : public NumericProperty<double, DoubleProperty> {
 		}
 	}
 
-	std::string valueToString() override {
+	std::string valueToString() const override {
 		return std::to_string(m_value);
 	}
 
