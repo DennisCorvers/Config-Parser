@@ -1,5 +1,5 @@
 # Config-Parser
-Mainy available config parsers work on string conversion to, and from the desired type.
+Many available config parsers work on string conversion to, and from the desired type.
 This project offers a more robust solution that is type-safe and also more easily extendable. The Config Parser class itself is thread-safe.
 
 
